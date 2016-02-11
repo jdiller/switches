@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, abort
 import logging
 import time
-import ast
-import os
 import pigpio
 from transmitter import Transmitter
 from collections import namedtuple
 
 app = Flask(__name__)
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
 Switch = namedtuple('Switch', 'name on_code off_code')
 logging.basicConfig(level=logging.DEBUG)
 
@@ -23,19 +20,21 @@ switches = [Switch('Lamp1', 333107, 333116),
 
 @app.route("/")
 def home():
-    return render_template('main.html', switches)
+    return render_template('main.html', switches=switches)
 
-@app.route('/switch/:name/:action', methods=['POST'])
-def switch(switch_name):
+@app.route('/switch/<switch_name>/<action>', methods=['POST'])
+def switch(switch_name, action):
     switch = _find_switch(switch_name)
     if not switch:
+        logging.debug("Couldn't find switch called " + switch_name)
         abort(404)
     if action.lower() not in ['on', 'off']:
         abort(400)
     if action.lower() == 'on':
-        _send_code(switch.on)
+        _send_code(switch.on_code)
     else:
-        _send_code(switch.off)
+        _send_code(switch.off_code)
+    return 'ok'
 
 def _send_code(code):
     pi = pigpio.pi()
@@ -45,7 +44,7 @@ def _send_code(code):
     tx.cancel()
 
 def _find_switch(switch):
-    next(sw for sw in switches if sw.name == switch)
+    return next(sw for sw in switches if sw.name == switch)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5001)

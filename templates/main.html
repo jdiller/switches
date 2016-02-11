@@ -1,0 +1,45 @@
+<!doctype html>
+<html charset='utf-8'>
+  <head>
+     <title>Current Apartment Conditions</title>
+     <style>
+       body {font-family: helvetica, arial, sans-serif; font-size: 50px;}
+       td { padding: 10px; }
+       .value { color: green; }
+       header { border-bottom: 1px solid black }
+       section{ border-bottom: 1px solid black }
+       footer { border-top: 1px solid black; color: orange; font-size:9px;}
+       #message {display:none;}
+       #switches {font-size: 20px;}
+       button{ font-size:20px;}
+     </style>
+     <script src='https://code.jquery.com/jquery-git2.min.js'></script>
+     <script type='text/javascript'>
+     $(function() {
+         $('.onbutton').click(function() {
+           $.post('switch/' + $(this).data('switch') + '/on', {'token':'notatokenyet'});
+         });
+
+         $('.offbutton').click(function() {
+           $.post('switch/' + $(this).data('switch') + '/off', {'token':'notatokenyet'});
+         });
+
+      });
+      </script>
+  </head>
+  <body>
+    <header>Current Conditions</header>
+    <section id='switches'>
+      <table>
+        {% for switch in switches %}
+        <tr>
+          <td><button class='onbutton' data-switch='{{switch.name}}'>On</button></td>
+          <td>{{switch.name}}</td>
+          <td><button class='offbutton' data-switch='{{switch.name}}'>Off</button></td>
+        </tr>
+        {% endfor %} 
+      </table>
+    </section>
+    <footer><span id='message'></span></footer>
+  </body>
+</html>
