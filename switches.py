@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, jsonify, abort
+from flask import Flask, render_template, abort
 import logging
 import time
 import pigpio
@@ -10,7 +10,7 @@ app = Flask(__name__)
 Switch = namedtuple('Switch', 'name on_code off_code')
 logging.basicConfig(level=logging.DEBUG)
 
-PIN=21
+PIN = 21
 
 switches = [Switch('Lamp1', 333107, 333116),
             Switch('Unused', 333251, 333260),
@@ -18,9 +18,11 @@ switches = [Switch('Lamp1', 333107, 333116),
             Switch('Humidifier', 335107, 335116),
             Switch('Lamp2', 341251, 341260)]
 
+
 @app.route("/")
 def home():
     return render_template('main.html', switches=switches)
+
 
 @app.route('/switch/<switch_name>/<action>', methods=['POST'])
 def switch(switch_name, action):
@@ -36,12 +38,14 @@ def switch(switch_name, action):
         _send_code(switch.off_code)
     return 'ok'
 
+
 def _send_code(code):
     pi = pigpio.pi()
     tx = Transmitter(pi, PIN)
     tx.send(code)
     time.sleep(1)
     tx.cancel()
+
 
 def _find_switch(switch):
     return next(sw for sw in switches if sw.name == switch)
