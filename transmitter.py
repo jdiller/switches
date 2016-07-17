@@ -6,7 +6,7 @@ class Transmitter(object):
    A class to transmit the wireless codes sent by 433 MHz
    wireless fobs.
    """
-   def __init__(self, pi, gpio, repeats=6, bits=24, gap=6500, t0=207, t1=690):
+   def __init__(self, pi, gpio, repeats=6, bits=24, gap=5800, t0=180, t1=560):
       """
       Instantiate with the Pi and the GPIO connected to the wireless
       transmitter.
