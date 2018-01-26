@@ -13,10 +13,10 @@ logging.basicConfig(level=logging.DEBUG)
 PIN = 21
 
 switches = [Switch('Lamp1', 333107, 333116),
-            Switch('Unused', 333251, 333260),
+            Switch('Lamp2', 333251, 333260),
             Switch('Kitchen', 333571, 333580),
             Switch('Humidifier', 335107, 335116),
-            Switch('Lamp2', 341251, 341260)]
+            Switch('Lamp3', 341251, 341260)]
 
 
 @app.route("/")
